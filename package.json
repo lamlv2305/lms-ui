@@ -5,14 +5,13 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
+    "preview": "vite preview",
     "typecheck": "react-router typegen && tsc",
     "format": "prettier --write \"**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@react-router/fs-routes": "^8.0.1",
     "@react-router/node": "8.0.1",
-    "@react-router/serve": "8.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "immer": "^11.1.8",
