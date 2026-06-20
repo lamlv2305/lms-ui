@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router";
 import { AppSidebar } from "~/components/app-sidebar";
 import {
@@ -29,12 +30,22 @@ function usePageTitle(pathname: string): string {
 export default function ProtectedLayout() {
 	const user = useProfile((s) => s.user);
 	const hasHydrated = useProfile((s) => s.hasHydrated);
+	const syncSession = useProfile((s) => s.syncSession);
 	const location = useLocation();
 	const title = usePageTitle(location.pathname);
+	// After an OIDC redirect there's a Kratos cookie but no persisted user;
+	// check whoami once before deciding the user is unauthenticated.
+	const [checked, setChecked] = useState(false);
 
-	// Wait for sessionStorage rehydration before deciding auth state,
-	// otherwise SSR/first paint would always redirect to /login.
-	if (!hasHydrated) {
+	useEffect(() => {
+		if (hasHydrated && !user && !checked) {
+			syncSession().finally(() => setChecked(true));
+		}
+	}, [hasHydrated, user, checked, syncSession]);
+
+	// Wait for sessionStorage rehydration (and the whoami probe) before
+	// deciding auth state, otherwise SSR/first paint would redirect to /login.
+	if (!hasHydrated || (!user && !checked)) {
 		return (
 			<div className="flex min-h-svh items-center justify-center p-6">
 				<Skeleton className="h-32 w-full max-w-md rounded-xl" />
