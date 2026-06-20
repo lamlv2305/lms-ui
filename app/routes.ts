@@ -7,6 +7,8 @@ import {
 
 export default [
 	route("login", "routes/_public/login.tsx"),
+	route("terms", "routes/_public/terms.tsx"),
+	route("privacy", "routes/_public/privacy.tsx"),
 
 	// Protected area: sidebar shell + client auth guard.
 	layout("routes/_auth/route.tsx", [
